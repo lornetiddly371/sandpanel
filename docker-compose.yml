@@ -1,0 +1,60 @@
+services:
+  backend:
+    image: ${BACKEND_IMAGE:-sandpanel-backend:local}
+    build:
+      context: ./backend-go
+      dockerfile: Dockerfile
+    container_name: sandpanel-backend
+    restart: unless-stopped
+    user: "0:0"
+    network_mode: host
+    shm_size: "512m"
+    tmpfs:
+      - /tmp
+    security_opt:
+      - seccomp:unconfined
+    dns:
+      # Add your local DNS server here if needed (e.g. 192.168.1.1)
+      - 1.1.1.1
+      - 8.8.8.8
+    environment:
+      BIND_ADDR: ":8080"
+      CONFIG_ROOT: "/data/config"
+      LOG_ROOT: "/data/logs"
+      GAME_BINARY: "/opt/insurgency/Insurgency/Binaries/Linux/InsurgencyServer-Linux-Shipping"
+      STEAMCMD_BIN: "/home/steam/steamcmd/steamcmd.sh"
+      STEAMCMD_INSTALL_DIR: "/opt/insurgency"
+      GAME_PORT: "${GAME_PORT:-27102}"
+      QUERY_PORT: "${QUERY_PORT:-27131}"
+      RCON_PORT: "${RCON_PORT:-27015}"
+      RCON_HOST: "127.0.0.1"
+      RCON_PASSWORD: "${RCON_PASSWORD:-change-me-rcon-password}"
+      WORKSPACE_ROOT: "/workspace"
+    volumes:
+      - ./data:/data
+      - ./:/workspace
+      # WARNING: Docker socket mount grants the container full host Docker API
+      # access (equivalent to root on the host). Only uncomment if you need the
+      # wrapper/restart and wrapper/update self-management features.
+      # - /var/run/docker.sock:/var/run/docker.sock
+      - ${SANDSTORM_INSTALL_PATH:-./sandstorm-install}:/opt/insurgency
+      - ./data/steam-home/.config:/home/steam/.config
+      - ./data/steam-home/mod.io:/home/steam/mod.io
+      - ./data/steam-home/.steam:/home/steam/.steam
+
+  frontend:
+    image: ${FRONTEND_IMAGE:-sandpanel-frontend:local}
+    build:
+      context: ./sandpanel-web
+      dockerfile: Dockerfile
+    container_name: sandpanel-frontend
+    restart: unless-stopped
+    network_mode: host
+    dns:
+      # Add your local DNS server here if needed (e.g. 192.168.1.1)
+      - 1.1.1.1
+      - 8.8.8.8
+    depends_on:
+      - backend
+    environment:
+      FRONTEND_PORT: "${FRONTEND_PORT:-22369}"

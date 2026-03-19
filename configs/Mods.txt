@@ -1,0 +1,2 @@
+; Add mod IDs here, one per line.
+; These will be loaded by the game server on startup.

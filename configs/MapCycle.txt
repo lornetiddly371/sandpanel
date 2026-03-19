@@ -1,0 +1,5 @@
+; Map cycle entries, one per line.
+; Format: (Scenario="Scenario_MapName_Mode",Lighting="Day",Mode="Checkpoint")
+(Scenario="Scenario_Crossing_Checkpoint_Security",Lighting="Day",Mode="Checkpoint")
+(Scenario="Scenario_Hillside_Checkpoint_Security",Mode="Checkpoint")
+(Scenario="Scenario_Precinct_Checkpoint_Security",Mode="Checkpoint")

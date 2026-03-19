@@ -1,0 +1,42 @@
+name: Promote to Beta
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type 'promote' to confirm merging dev into beta"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  promote:
+    name: Merge dev → beta
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'promote'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge dev into beta
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin dev beta
+          git checkout beta
+          git merge origin/dev --no-edit
+          git push origin beta
+
+      - name: Create summary
+        run: |
+          echo "## ✅ Promoted dev → beta" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Commits merged:" >> "$GITHUB_STEP_SUMMARY"
+          git log origin/main..beta --oneline | head -20 >> "$GITHUB_STEP_SUMMARY"

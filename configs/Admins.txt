@@ -1,0 +1,4 @@
+; Add Steam64 IDs here, one per line.
+; Lines starting with ; or # are comments.
+; Example:
+; 76561198000000000

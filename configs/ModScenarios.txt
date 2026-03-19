@@ -1,0 +1,2 @@
+; Modded scenario entries for custom maps. One per line.
+; Format: (Scenario="Scenario_ModMapName_Mode",Lighting="Day",Mode="Checkpoint")

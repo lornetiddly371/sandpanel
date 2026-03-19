@@ -1,0 +1,33 @@
+# Runtime state and data
+data/
+
+# Game server binary (installed via SteamCMD, ~15GB)
+sandstorm-install/
+
+# Go build artifacts
+backend-go/sandpanel-backend
+
+# Node.js
+sandpanel-web/node_modules/
+sandpanel-web/dist/
+
+# Environment (contains secrets)
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Scratch files
+research.md
+cookies.txt
